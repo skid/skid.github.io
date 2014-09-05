@@ -1,0 +1,26 @@
+{
+  "name": "angular-widgetbox",
+  "version": "0.0.1",
+  "homepage": "https://github.com/skid/angular-widgetbox",
+  "authors": [
+    "Dusko Jordanovski <jordanovskid@gmail.com>"
+  ],
+  "description": "Put  boxes into columns. Drag/drop to move and reorder them. Like iGoogle, remember?",
+  "main": "angular-widgetbox.js",
+  "keywords": [
+    "igoogle",
+    "widgets",
+    "drag",
+    "drop",
+    "ui"
+  ],
+  "license": "MIT",
+  "private": false,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

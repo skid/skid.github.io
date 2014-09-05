@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Angular Widgetbox Demo</title>
+    <meta name="description" content="Angular Widgetbox Demo">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600,800' rel='stylesheet' type='text/css'>
+
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-widgetbox/angular-widgetbox.min.js"></script>
+
+    <style type="text/css" media="screen">
+      body {
+        font-family: "Open Sans";
+        font-weight: 300;
+        color: #424242;
+        background: #fce4ec;
+        overflow-y:scroll;
+      }
+      
+      header {
+        text-align: center;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+        border-bottom: solid 1px #880e4f;
+      }
+      
+      header > h1 {
+        margin: 10px 0 5px;
+      }
+      
+      header > p {
+        margin: 5px 0;
+      }
+      
+      main {
+        width: 100%;
+      }
+      
+      section {
+        float: left;
+        width: 25%;
+        padding-bottom: 200px !important;
+      }
+      
+      .widget-container {
+        box-sizing: border-box;
+        margin: 0 5px 15px;
+        border: solid 1px #880e4f;
+  
+        .widget-bottom-controls {
+          .clearfix();
+
+          margin: -5px;
+          padding: 0 5px;
+  
+          button {
+            float: right;
+            border: none;
+            display: inline-block;
+            margin: 5px 0 5px 5px;
+            padding: 3px 6px;
+            font-size: 12px;
+          }
+        }
+      }
+      
+      .widget-header {
+        padding: 5px;
+        margin-bottom: 5px;
+        background: #880e4f;
+      }
+      
+      .widget-header h3 {
+        vertical-align: middle;
+        font-weight: normal;
+        color: white;
+        margin: 0;
+      }
+      
+      .widget-contents {
+        font-size: 14px;
+        padding: 5px;
+      }
+      
+      .widgetbox-placeholder {
+        height: 100px;
+        margin: 0 0 10px;
+        background: rgba(0,0,0,0.25);
+        margin: 0 5px 10px;
+      }
+    </style>
+    
+    <script type="text/javascript">
+      var app = angular.module('AngularWidgetboxApp', ['widgetbox']);
+      
+      app.controller('MainController', function($scope){
+        $scope.columns = [ [{ }], [{ }], [{ }], [{ }] ];
+        // The angular-widgetbox directive calls this method when a widget is moved
+        $scope.widgetboxOnWidgetMove = function(sourceColumn, sourcePosition, targetColumn, targetPosition){
+          $scope.$apply(function(){
+            if(targetColumn){
+              var widget = $scope.columns[parseInt(sourceColumn, 10)].splice(parseInt(sourcePosition, 10), 1)[0];
+              var target = $scope.columns[parseInt(targetColumn, 10)];
+              targetPosition == 'last' ? target.push(widget) : target.splice(parseInt(targetPosition, 10), 0, widget);
+            }
+          });
+        }
+      });
+    </script>
+  </head>
+
+  <body ng-app="AngularWidgetboxApp">
+    <header>
+      <h1>A demo of angular-widgetbox</h1>
+      <p>Try dragging the boxes and re-arrainging them.</p>
+    </header>
+
+    <main ng-controller="MainController">
+      <section class="wb-column" ng-repeat="column in columns" widgetbox-column='wb-column' widgetbox-column-id="{{ $index }}">
+        <div ng-repeat="widget in column" class="widget-container wb-widget" widgetbox-widget='wb-widget' widgetbox-draghandle=".widget-header *" widgetbox-widget-id="{{ $index }}">
+          <div class="widget-header"><h3>Widget #{{$parent.$index}} - Drag here</h3></div>
+          <div class="widget-contents">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </div>
+        </div>
+        
+      </section>
+      <br style="clear:both">
+    </main>
+    
+  </body>
+</html>
+
