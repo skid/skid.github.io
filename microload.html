@@ -1,34 +1,66 @@
-<!doctype html>
-<html class="no-js" lang="">
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Microload</title>
-    <meta name="description" content="">
+    <title>Angular Widgetbox Demo</title>
+    <meta name="description" content="Angular Widgetbox Demo">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="../microload.js"></script>
-  </head>
-  <body>
-    <h1>This is a microload demo</h1>
-    <p>The background should already be blue and you should see a bunch of statements after this one.</p>
-  </body>
-  <script type="text/javascript">
-    
-    function echo(str){
-      var p = document.createElement('p');
-      p.innerHTML = str;
-      document.body.appendChild(p);
-    }
 
-    microload(['dependency-1.js', 'dependency-2.js'], ['dependee-1.js', 'dependee-2.js'], ['standalone-1.js', 'standalone-2.js', 'stylesheet.css'], function(){ 
-      echo("Loaded first batch of scripts. Let's wait and load them again.");
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,600,800' rel='stylesheet' type='text/css'>
+    <script src="static/js/microload.min.js"></script>
 
-      setTimeout(function(){
-        microload('standalone-1.js', 'dependee-2.js', function(){
-          echo("Second batch of scripts are already loaded. Executing callback only.");
-        });
-      }, 2000);
+    <style type="text/css" media="screen">
+      body {
+        font-family: "Open Sans";
+        font-weight: 300;
+        color: #424242;
+        background: #fce4ec;
+        overflow-y:scroll;
+      }
       
-    });
-  </script>
+      header {
+        text-align: center;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+        border-bottom: solid 1px #880e4f;
+      }
+      
+      header > h1 {
+        margin: 10px 0 5px;
+      }
+      
+      header > p {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+
+  <body ng-app="AngularWidgetboxApp">
+    <header>
+      <h1>A demo of microload</h1>
+      <p>The background should already be blue and you should see a bunch of statements after this one.</p>
+    </header>
+    
+    <script type="text/javascript">
+      function echo(str){
+        var p = document.createElement('p');
+        p.innerHTML = str;
+        document.body.appendChild(p);
+      }
+
+      microload(['static/microload/dependency-1.js', 'static/microload/dependency-2.js'], 
+                ['static/microload/dependee-1.js', 'static/microload/dependee-2.js'], 
+                ['static/microload/standalone-1.js', 'static/microload/standalone-2.js', 'static/microload/stylesheet.css'], function(){ 
+        echo("Loaded first batch of scripts. Let's wait and load them again.");
+
+        setTimeout(function(){
+          microload('static/microload/standalone-1.js', 'static/microload/dependee-2.js', function(){
+            echo("Scripts already loaded. Executing callback only.");
+          });
+        }, 2000);
+      
+      });
+    </script>
+  </body>
 </html>
