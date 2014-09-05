@@ -98,7 +98,7 @@
       var app = angular.module('AngularWidgetboxApp', ['widgetbox']);
       
       app.controller('MainController', function($scope){
-        $scope.columns = [ [{ }], [{ }], [{ }], [{ }] ];
+        $scope.columns = [ [{ title: "Widget One" }], [{ title: "Widget Two" }], [{ title: "Widget Three" }], [{ title: "Widget Four" }] ];
         // The angular-widgetbox directive calls this method when a widget is moved
         $scope.widgetboxOnWidgetMove = function(sourceColumn, sourcePosition, targetColumn, targetPosition){
           $scope.$apply(function(){
@@ -122,7 +122,7 @@
     <main ng-controller="MainController">
       <section class="wb-column" ng-repeat="column in columns" widgetbox-column='wb-column' widgetbox-column-id="{{ $index }}">
         <div ng-repeat="widget in column" class="widget-container wb-widget" widgetbox-widget='wb-widget' widgetbox-draghandle=".widget-header *" widgetbox-widget-id="{{ $index }}">
-          <div class="widget-header"><h3>Widget #{{$parent.$index}} - Drag here</h3></div>
+          <div class="widget-header"><h3>{{widget.title}} - Drag here</h3></div>
           <div class="widget-contents">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
