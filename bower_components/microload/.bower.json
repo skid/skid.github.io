@@ -1,0 +1,14 @@
+{
+  "name": "microload",
+  "homepage": "https://github.com/skid/microload",
+  "_release": "f0f23c9425",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "f0f23c94258973cadbe33c44e8432c1bddf0cd20"
+  },
+  "_source": "git://github.com/skid/microload.git",
+  "_target": "*",
+  "_originalSource": "microload",
+  "_direct": true
+}
