@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Helium Grid Example</title>
+  <link rel="stylesheet" type="text/css" href="static/layout.css">
+  <link rel="stylesheet" type="text/css" href="static/theme.css">
+  <script src="static/lib/lodash-3.8.0.js"></script>
+  
+  <link rel="stylesheet" type="text/css" href="static/helium/css/helium-0.1.0.min.css">
+  <script src="static/helium/js/helium-0.1.0.min.js"></script>
+
+  <link rel="stylesheet" href="static/highlight/github.css">
+  <script src="static/highlight/highlight.pack.js"></script>
+</head>
+<body>
+<div class="row">
+  <header>
+    <h1>Helium Grid Demo</h1>
+  </header>
+  <main>
+    <section>
+      <p>
+        This is the helium grid with all its bells and whistles. It's loaded with the world country data taken from 
+        <a href="https://github.com/mledoze/countries">This Github repository</a>.
+      </p>
+      <p>
+        Things you can do:
+        <ul>
+          <li>Resize and hide the columns</li>
+          <li>Edit the cells and navigate with the keyboard</li>
+          <li>Lock individual rows for editing</li>
+          <li>Sort the data by multiple columns</li>
+          <li>Filter the data</li>
+        </ul>
+      </p>
+      <p>
+        Most of the cells are editable. To edit a cell you just need to click on it. To stop editing - click anywhere else.
+        The "Languages" column has a custom edit control which shows in the modal. The changes will be applied only if
+        you click "OK". The grid editing does not work on Internet Explorer due to a bug I'm losing my mind over ...
+      </p>
+    </section>
+    <section>
+      <div class="title"><h2>About the Code</h2></div>
+      <p>
+        An example data record and the configuration code are listed below.
+        The code uses some <a href="https://lodash.com/">Lodash</a> functions. If you're unfamiliar with them,
+        go ahead and <a href="https://lodash.com/docs">check the docs</a>.
+      </p>
+      <p>
+        Since we have the entire dataset in memory, the paging, sorting and filtering is done manually in JS. In other cases, you
+        would probably want to offload that to the backend. In that case, there are 3 important points to remember:
+        <ol>
+          <li>The <code class="javascript">reset()</code> config function should make an AJAX request pass the result to the callback.</li>
+          <li>
+            The <code class="javascript">dataSize()</code> config function should <strong>return</strong> 
+            the number of data items you have in your collection <strong>after</strong> any filtering has been applied.
+            This can be done by returning the item count in the aforementioned AJAX call and storing it in a closure variable.
+          </li>
+          <li>
+            The <code class="javascript">onEdit()</code> config function should store the changes somewhere (or send them directly to the backend)
+            since they will be lost when the grid page changes. Having item IDs is helpful here, even if you don't display them in the grid.
+          </li>
+        </ol>
+      </p>
+    
+      <div class="title"><h2>Countries of the world</h2></div>
+      <div id="countries" style="height: 400px; border: solid 1px #ccc"></div>
+      <div id="pagination" style="text-align: center; margin-top: 10px"></div>
+    </section>
+    <section>
+      <div class="title"><h2>Example data record</h2></div>
+      <p> The dataset is a Javascript array which is already loaded. This is how a single record looks like:</p>
+<pre><code class="json">{
+  "name": {
+    "common": "Aruba",
+    "official": "Aruba",
+    "native": {
+      "nld": {
+        "official": "Aruba",
+        "common": "Aruba"
+      },
+      "pap": {
+        "official": "Aruba",
+        "common": "Aruba"
+      }
+    }
+  },
+  "tld": [".aw"],
+  "cca2": "AW",
+  "ccn3": "533",
+  "cca3": "ABW",
+  "cioc": "ARU",
+  "currency": ["AWG"],
+  "callingCode": ["297"],
+  "capital": "Oranjestad",
+  "altSpellings": ["AW"],
+  "region": "Americas",
+  "subregion": "Caribbean",
+  "languages": {
+    "nld": "Dutch",
+    "pap": "Papiamento"
+  },
+  "translations": {
+    "deu": {"official": "Aruba", "common": "Aruba"},
+    "fra": {"official": "Aruba", "common": "Aruba"},
+    "hrv": {"official": "Aruba", "common": "Aruba"},
+    "ita": {"official": "Aruba", "common": "Aruba"},
+    "jpn": {"official": "\u30a2\u30eb\u30d0", "common": "\u30a2\u30eb\u30d0"},
+    "nld": {"official": "Aruba", "common": "Aruba"},
+    "por": {"official": "Aruba", "common": "Aruba"},
+    "rus": {"official": "\u0410\u0440\u0443\u0431\u0430", "common": "\u0410\u0440\u0443\u0431\u0430"},
+    "spa": {"official": "Aruba", "common": "Aruba"},
+    "fin": {"official": "Aruba", "common": "Aruba"}
+  },
+  "latlng": [12.5, -69.96666666],
+  "demonym": "Aruban",
+  "landlocked": false,
+  "borders": [],
+  "area": 180
+}        
+</code></pre>
+    </section>
+    <section>
+      <div class="title"><h2>The code</h2></div>
+      <p>
+        This is the code used to configure and initialze the grid, along with an example filtering, sorting and paging implementation.
+      </p>
+<pre><code class="javascript">// Countries are preloaded
+var COUNTRIES = [....];
+// All the regions 
+var REGIONS = _.compact(_.uniq(_.pluck(COUNTRIES, "region")));
+// All the subregions
+var SUBREGIONS = _.compact(_.uniq(_.pluck(COUNTRIES, "subregion")));
+// All languages
+var LANGUAGES = _.map(_.reduce(_.pluck(COUNTRIES, "languages"), _.extend, {}), function(text, value){
+  return { t: text, v: value };
+}).sort(function(a, b){ return a.t &gt; b.t ? 1 : b.t &gt; a.t ? -1 : 0 });
+
+// The default page size
+var PAGE_SIZE = 30;
+// The entire (filtered) data
+var DATA = COUNTRIES.slice();
+// The displayed page
+var PAGE = COUNTRIES.slice(0, PAGE_SIZE);
+
+// Ured for retreving values from nested objects
+// by using namespaced keys like "name.official"
+function getKey(item, name){
+  var part, parts = name.split(".");
+  var obj = item;
+  while(obj &amp;&amp; (part = parts.shift())){
+    obj = obj[part];
+  }
+  return obj;
+}
+
+// Initialize the modal and controls for editing languages
+var modal = he('modal', document.getElementById('language-modal'), { closeAnywhere: false, closeIcon: true });
+var languages = he('scrollList', document.getElementById('language-list'), { items: LANGUAGES, multiple: true, nullable: true });
+var ok = he('button', document.getElementById('pick-language')).on('click', function(){
+  modal.close(true);
+})
+
+// The grid config object
+var config = {
+  global: {
+    pagination: {
+      element: document.getElementById('pagination'),
+      size: PAGE_SIZE,
+      links: 7
+    },
+    dataSize: function(){
+      return DATA.length;
+    },
+    pageSize: function(){
+      return PAGE.length;
+    },
+    getCell: getKey,
+    onEdit: function(index, item, name, value, callback){
+      // Handles namespaced keys like "name.official"
+      var part, parts = name.split(".");
+      var prop = parts.pop();
+      var obj = item;
+      while(part = parts.shift()){
+        obj = obj[part];
+      }
+      // Objects are passed by reference so this will also
+      // change the country in the original dataset.
+      obj[prop] = value;
+      callback();
+    },
+    
+    // In most implementations, this function will just do an AJAX call
+    // and let the backend sort this out.
+    reset: function(params, callback){
+      var filters  = params.filters;
+      var sorting  = params.sorting;
+      var pageSize = params.pagination.size;
+      var page     = params.pagination.page;
+    
+      // Apply filtering
+      DATA = _.filter(COUNTRIES, function(item){
+        for(var name in filters){
+          var value = getKey(item, name);
+          if(value !== undefined){
+            var filter = filters[name];
+            for(var cmp in filter){
+              // Deliberate usage of double equals
+              if(filter[cmp] == null){
+                continue;
+              }
+              if(cmp === "~" &amp;&amp; value.toLowerCase().indexOf(filter[cmp].toLowerCase()) === -1){
+                return false;
+              }
+              if(cmp === "&gt;" &amp;&amp; value &lt;= filter[cmp]){
+                return false;
+              }
+              if(cmp === "&lt;" &amp;&amp; value &gt;= filter[cmp]){
+                return false;
+              }
+              if(cmp === "in" &amp;&amp; filter[cmp].length &gt; 0 &amp;&amp; filter[cmp].indexOf(value) === -1){
+                return false;
+              }
+            }
+          }
+        }
+        return true;
+      })
+      // Sort the filtered data by multiple columns
+      .sort(function(a, b){
+        for(var i=0, ii=sorting.length; i&lt;ii; ++i){ 
+          var crit = sorting[i];
+          var dir = crit.direction;
+          var name = crit.name;
+          var aVal = getKey(a, name);
+          var bVal = getKey(b, name);
+          if((dir === "asc" &amp;&amp; aVal &lt; bVal) || (dir === "desc" &amp;&amp; aVal &gt; bVal)){
+            return -1;
+          }
+          else if((dir === "asc" &amp;&amp; aVal &gt; bVal) || (dir === "desc" &amp;&amp; aVal &lt; bVal)){
+            return 1;
+          }
+        }
+        return 0;
+      });
+    
+      // Pages are 1-indexed
+      callback(PAGE = DATA.slice((page-1)*pageSize, page*pageSize));
+    }
+  },
+  // There's quite some repetition in the columns' definition.
+  // You can map a function over an array of colum names to avoid this.
+  columns: [{
+    attrs: { style: { "text-align": "center" } },
+    width: 60,
+    name: "locked",
+    title: "No Edit",
+    hideable: false,
+    editable: true,
+    sortable: true,
+    typeInfo: "boolean"
+  },{
+    width: 200,
+    name: "name.common",
+    title: "Name",
+    filterable: true,
+    hideable: false,
+    sortable: true,
+    typeInfo: "text",
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 200,
+    name: "name.official",
+    title: "Official Name",
+    filterable: true,
+    resizable: true,
+    sortable: true,
+    typeInfo: "text",
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 120,
+    name: "capital",
+    title: "Capital",
+    filterable: true,
+    resizable: true,
+    sortable: true,
+    typeInfo: "text",
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 100,
+    name: "cca2",
+    title: "ISO Alpha 2",
+    typeInfo: "text",
+    sortable: true,
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 100,
+    name: "cca3",
+    title: "ISO Alpha 3",
+    typeInfo: "text",
+    sortable: true,
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 120,
+    name: "region",
+    title: "Region",
+    filterable: true,
+    resizable: true,
+    editable: true,
+    sortable: true,
+    typeInfo: {
+      type: "enum",
+      items: REGIONS
+    },
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 120,
+    name: "subregion",
+    title: "Subregion",
+    filterable: true,
+    resizable: true,
+    editable: true,
+    sortable: true,
+    typeInfo: {
+      type: "enum",
+      items: SUBREGIONS
+    },
+    editable: function(item){ return !item.locked; },
+  },{
+    attrs: { style: { "text-align": "right" } },
+    width: 120,
+    name: "area",
+    title: "Area km&sup2;",
+    filterable: true,
+    editable: true,
+    resizable: true,
+    sortable: true,
+    typeInfo: {
+      type: "number",
+      format: 2
+    },
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 200,
+    name: "languages",
+    title: "Languages",
+    editable: true,
+    resizable: true,
+    typeInfo: {
+      type: "enum",
+      items: []
+    },
+    template: function(item){
+      return _.values(item.languages).join(", ");
+    },
+    editable: function(item){ 
+      return !item.locked; 
+    },
+    editOptions: {
+      type: "custom",
+      onEdit: function(options, cbOk, cbCancel){
+        languages.val(_.keys(options.value));
+        modal.once('close', function(withOK){
+          withOK ? cbOk(_.zipObject(languages.val(), languages.text())) : cbCancel();
+        });
+        modal.open();
+        // The modal opens in a deferred function.
+        // We need to focus AFTER the languages list is added to the DOM.
+        setTimeout(function(){
+          languages.el.focus();
+        });
+      }
+    }
+  }]
+}
+
+// Init the grid
+var grid = he('grid', document.getElementById('countries'), { data: PAGE, config: config });  
+</code></pre>
+    </section>
+  </main>
+
+<div class="he-modal" id="language-modal" style="width:200px;">
+  <div class="row">
+    <div class="col-12">
+      <h4>Pick Languages</h4>
+      <div id="language-list" style="height: 300px"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4 off-8">
+      <button id="pick-language">OK</button>
+    </div>
+  </div>
+</div>
+
+<script src="static/sample-data/countries.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>
+// All the regions 
+var REGIONS = _.compact(_.uniq(_.pluck(COUNTRIES, "region")));
+// All the subregions
+var SUBREGIONS = _.compact(_.uniq(_.pluck(COUNTRIES, "subregion")));
+// All languages
+var LANGUAGES = _.map(_.reduce(_.pluck(COUNTRIES, "languages"), _.extend, {}), function(text, value){
+  return { t: text, v: value };
+}).sort(function(a, b){ return a.t > b.t ? 1 : b.t > a.t ? -1 : 0 });
+
+// The default page size
+var PAGE_SIZE = 30;
+// The entire (filtered) data
+var DATA = COUNTRIES.slice();
+// The displayed page
+var PAGE = COUNTRIES.slice(0, PAGE_SIZE);
+
+// Ured for retreving values from nested objects
+// by using namespaced keys like "name.official"
+function getKey(item, name){
+  var part, parts = name.split(".");
+  var obj = item;
+  while(obj && (part = parts.shift())){
+    obj = obj[part];
+  }
+  return obj;
+}
+
+var modal = he('modal', document.getElementById('language-modal'), { closeAnywhere: false, closeIcon: true });
+var languages = he('scrollList', document.getElementById('language-list'), { items: LANGUAGES, multiple: true, nullable: true });
+var ok = he('button', document.getElementById('pick-language')).on('click', function(){
+  modal.close(true);
+})
+
+var config = {
+  global: {
+    pagination: {
+      element: document.getElementById('pagination'),
+      size: PAGE_SIZE,
+      links: 7
+    },
+    dataSize: function(){
+      return DATA.length;
+    },
+    pageSize: function(){
+      return PAGE.length;
+    },
+    getCell: getKey,
+    onEdit: function(index, item, name, value, callback){
+      // Handles namespaced names like "name.official"
+      var part, parts = name.split(".");
+      var prop = parts.pop();
+      var obj = item;
+      while(part = parts.shift()){
+        obj = obj[part];
+      }
+      obj[prop] = value;
+      callback();
+    },
+    reset: function(params, callback){
+      var filters  = params.filters;
+      var sorting  = params.sorting;
+      var pageSize = params.pagination.size;
+      var page     = params.pagination.page;
+    
+      // Apply filtering
+      DATA = _.filter(COUNTRIES, function(item){
+        for(var name in filters){
+          var value = getKey(item, name);
+          if(value !== undefined){
+            var filter = filters[name];
+            for(var cmp in filter){
+              // Deliberate usage of double equals
+              if(filter[cmp] == null){
+                continue;
+              }
+              if(cmp === "~" && value.toLowerCase().indexOf(filter[cmp].toLowerCase()) === -1){
+                return false;
+              }
+              if(cmp === ">" && value <= filter[cmp]){
+                return false;
+              }
+              if(cmp === "<" && value >= filter[cmp]){
+                return false;
+              }
+              if(cmp === "in" && filter[cmp].length > 0 && filter[cmp].indexOf(value) === -1){
+                return false;
+              }
+            }
+          }
+        }
+        return true;
+      })
+      .sort(function(a, b){
+        for(var i=0, ii=sorting.length; i<ii; ++i){ 
+          var crit = sorting[i];
+          var dir = crit.direction;
+          var name = crit.name;
+          var aVal = getKey(a, name);
+          var bVal = getKey(b, name);
+          if((dir === "asc" && aVal < bVal) || (dir === "desc" && aVal > bVal)){
+            return -1;
+          }
+          else if((dir === "asc" && aVal > bVal) || (dir === "desc" && aVal < bVal)){
+            return 1;
+          }
+        }
+        return 0;
+      });
+    
+      // Pages are 1-indexed
+      callback(PAGE = DATA.slice((page-1)*pageSize, page*pageSize));
+    }
+  },
+  columns: [{
+    attrs: { style: { "text-align": "center" } },
+    width: 60,
+    name: "locked",
+    title: "No Edit",
+    hideable: false,
+    editable: true,
+    sortable: true,
+    typeInfo: "boolean"
+  },{
+    width: 200,
+    name: "name.common",
+    title: "Name",
+    filterable: true,
+    hideable: false,
+    sortable: true,
+    typeInfo: "text",
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 200,
+    name: "name.official",
+    title: "Official Name",
+    filterable: true,
+    resizable: true,
+    sortable: true,
+    typeInfo: "text",
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 120,
+    name: "capital",
+    title: "Capital",
+    filterable: true,
+    resizable: true,
+    sortable: true,
+    typeInfo: "text",
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 100,
+    name: "cca2",
+    title: "ISO Alpha 2",
+    typeInfo: "text",
+    sortable: true,
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 100,
+    name: "cca3",
+    title: "ISO Alpha 3",
+    typeInfo: "text",
+    sortable: true,
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 120,
+    name: "region",
+    title: "Region",
+    filterable: true,
+    resizable: true,
+    editable: true,
+    sortable: true,
+    typeInfo: {
+      type: "enum",
+      items: REGIONS
+    },
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 120,
+    name: "subregion",
+    title: "Subregion",
+    filterable: true,
+    resizable: true,
+    editable: true,
+    sortable: true,
+    typeInfo: {
+      type: "enum",
+      items: SUBREGIONS
+    },
+    editable: function(item){ return !item.locked; },
+  },{
+    attrs: { style: { "text-align": "right" } },
+    width: 120,
+    name: "area",
+    title: "Area km&sup2;",
+    filterable: true,
+    editable: true,
+    resizable: true,
+    sortable: true,
+    typeInfo: {
+      type: "number",
+      format: 2
+    },
+    editable: function(item){ return !item.locked; },
+  },{
+    width: 200,
+    name: "languages",
+    title: "Languages",
+    editable: true,
+    resizable: true,
+    typeInfo: {
+      type: "enum",
+      items: []
+    },
+    template: function(item){
+      return _.values(item.languages).join(", ");
+    },
+    editable: function(item){ 
+      return !item.locked; 
+    },
+    editOptions: {
+      type: "custom",
+      onEdit: function(options, cbOk, cbCancel){
+        languages.val(_.keys(options.value));
+        modal.once('close', function(withOK){
+          withOK ? cbOk(_.zipObject(languages.val(), languages.text())) : cbCancel();
+        });
+        modal.open();
+        // The modal opens in a deferred function
+        setTimeout(function(){
+          languages.el.focus();
+        });
+      }
+    }
+  }]
+}
+
+// Init the grid
+var grid = he('grid', document.getElementById('countries'), { data: PAGE, config: config });
+</script>
+</body>
+</html>

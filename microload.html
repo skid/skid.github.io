@@ -49,13 +49,14 @@
         document.body.appendChild(p);
       }
 
-      microload(['static/microload/dependency-1.js', 'static/microload/dependency-2.js'], 
-                ['static/microload/dependee-1.js', 'static/microload/dependee-2.js'], 
-                ['static/microload/standalone-1.js', 'static/microload/standalone-2.js', 'static/microload/stylesheet.css'], function(){ 
+      microload(['static/sample-data/microload/dependency-1.js', 'static/sample-data/microload/dependency-2.js'], 
+                ['static/sample-data/microload/dependee-1.js', 'static/sample-data/microload/dependee-2.js'], 
+                ['static/sample-data/microload/standalone-1.js', 'static/sample-data/microload/standalone-2.js', 
+                 'static/sample-data/microload/stylesheet.css'], function(){ 
         echo("Loaded first batch of scripts. Let's wait and load them again.");
 
         setTimeout(function(){
-          microload('static/microload/standalone-1.js', 'static/microload/dependee-2.js', function(){
+          microload('static/sample-data/microload/standalone-1.js', 'static/sample-data/microload/dependee-2.js', function(){
             echo("Scripts already loaded. Executing callback only.");
           });
         }, 2000);

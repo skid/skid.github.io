@@ -1,0 +1,117 @@
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 200;
+  src: local('Source Code Pro ExtraLight'), local('SourceCodePro-ExtraLight'),
+       url('fonts/source-code-pro/source-code-pro-v6-latin-ext_latin-200.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('fonts/source-code-pro/source-code-pro-v6-latin-ext_latin-200.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Source Code Pro'), local('SourceCodePro-Regular'),
+       url('fonts/source-code-pro/source-code-pro-v6-latin-ext_latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('fonts/source-code-pro/source-code-pro-v6-latin-ext_latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Source Code Pro Bold'), local('SourceCodePro-Bold'),
+       url('fonts/source-code-pro/source-code-pro-v6-latin-ext_latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('fonts/source-code-pro/source-code-pro-v6-latin-ext_latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 200;
+  src: local('Source Sans Pro ExtraLight'), local('SourceSansPro-ExtraLight'),
+       url('fonts/source-sans/source-sans-pro-v9-latin-200.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('fonts/source-sans/source-sans-pro-v9-latin-200.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: italic;
+  font-weight: 200;
+  src: local('Source Sans Pro ExtraLight Italic'), local('SourceSansPro-ExtraLightIt'),
+       url('fonts/source-sans/source-sans-pro-v9-latin-200italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('fonts/source-sans/source-sans-pro-v9-latin-200italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Source Sans Pro'), local('SourceSansPro-Regular'),
+       url('fonts/source-sans/source-sans-pro-v9-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('fonts/source-sans/source-sans-pro-v9-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Source Sans Pro Italic'), local('SourceSansPro-It'),
+       url('fonts/source-sans/source-sans-pro-v9-latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('fonts/source-sans/source-sans-pro-v9-latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'),
+       url('fonts/source-sans/source-sans-pro-v9-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('fonts/source-sans/source-sans-pro-v9-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@font-face {
+  font-family: 'Source Sans Pro';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Source Sans Pro Bold Italic'), local('SourceSansPro-BoldIt'),
+       url('fonts/source-sans/source-sans-pro-v9-latin-700italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('fonts/source-sans/source-sans-pro-v9-latin-700italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/**
+ * Colors: 
+ * 
+ * Dark primary: #303F9F;
+ * Primary: #3F51B5;
+ * Light Primary: #C5CAE9;
+ * Accent: #607D8B;
+ * Primary Text: #212121; 
+ * Secondary Text: #727272; 
+ * Divider: #D3D3D3; 
+**/
+html {
+  font-family: 'Source Sans Pro';
+  font-size: 14px;
+  color: #212121;
+}
+h1 { font-size: 300%; }
+h2 { font-size: 250%; }
+h3 { font-size: 200%; }
+h4 { font-size: 150%; }
+h6 { font-size: 125%; }
+h1 > small, h2 > small, h3 > small { 
+  font-size: 65%; 
+}
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 0;
+  margin-left: 0;
+  padding: 0 5px;
+  text-indent: 0;
+  font-family: 'Source Code Pro';
+  background-color: #e3e3e3;
+  display: inline-block;
+}
+a, a:visited, a:active {
+  color: #607D8B;
+  text-decoration: none;
+}
+code {
+  font-family: 'Source Code Pro';
+  background-color: #d3d3d3;
+  padding: 0 5px;
+  -webkit-text-size-adjust: none;
+  border-radius: 4px;
+}
