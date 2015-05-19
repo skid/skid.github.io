@@ -82,7 +82,7 @@
           });
           // Or by passing a valid HTML Element ID
           var button2 = he('button', 'button2');
-        
+          
           // The he() function returns a reference to the control
           var button3 = he('button', 'button3', { label: document.getElementById('button3-label') });
           var button4 = he('button', 'button4', { icon: "chevron-left" }).on('click', function(){
@@ -169,7 +169,7 @@
               this.option('placeholder', "Type 'disable' and click");
             }
           });
-        
+          
           // This will show an error icon on the label, apply a class and add a tooltip
           input5.option('error', "Hey! Don't do that!");
         </script>
@@ -202,16 +202,16 @@
           // Number inputs return Number values. Values are automatically rounded to the specified format.
           var input6 = he('number', 'input6', { value: 3, placeholder: "Try a negative number" });
           var input7 = he('number', 'input7', { value: -3.44, negative: true,  format: 5, icon: "check", click: true, iconpos: "after" });
-        
+          
           // Change events are triggered when the input is blurred and the value is different from when it gained focus the last time.
           input7.on('change', function(){
             input6.val(this.val());
           });
-        
+          
           // Date inputs return Date objects
           var input8 = he('date', 'input8', { format: "US", value: new Date });
           var input9 = he('date', 'input9', { format: "ISO", value: new Date, datepicker: { position: "below" } });
-        
+          
           // The "type" event is triggered only if the input's text content changed after a keypress
           var input10 = he('input', 'input10', { placeholder: "Inputs handle 'typing'" });
           input10.on('type', function(){
@@ -251,7 +251,7 @@
         <script type="text/javascript">
           // So, we already have a COLORS item set preloaded.
           // It's an array that contains items like this `{ v: "#ff0000", t: "Red" }`
-        
+          
           // This is a small item set with optgroup headers.
           // Any item that has no value key ("v"), but only a text key ("t") is treated as an optgroup header.
           var SIMPLE = [
@@ -261,12 +261,12 @@
             { t:"Real Numbers" }, 
             { v: 1.111, t: "One point one, one, one" }
           ];
-        
+          
           // A custom template function for rendering each item
           var colorTemplate = function(item){
             return "<div class='color-square' style='background-color:" + item.v +";'></div>" + item.t;
           }
-        
+          
           var list1 = he('scrollList', 'list1', { 
             items: COLORS, 
             multiple: true,
