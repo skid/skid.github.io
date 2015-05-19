@@ -1,0 +1,103 @@
+/**   
+ * Mini grid system.
+ * Based on a 12 column grid. Gutter width is 15px. Row margins are 10px.
+**/
+.row:before, .row:after { content: " "; display: table; }
+.row:after { clear: both; }
+.row {
+  margin: 0;
+  margin-bottom: 10px;
+}
+.row:last-child {
+  margin-bottom: 0;
+}
+
+/* Columns are floated if inside a row */
+.row > [class*='col-'] {
+  float: left;
+}
+[class*='col-']{
+  box-sizing: border-box;
+}
+[class*='col-'] + [class*='col-']:not([class*='off-']) {
+  margin-left: 15px;
+}
+
+/* Controls always take a full column width */
+[class*='col-'] > input:not([type='checkbox']):not([type='radio']),
+[class*='col-'] > button:not(.he-checkbox):not(.he-radio),
+[class*='col-'] > select, [class*='col-'] textarea,
+[class*='col-'] > .he-grid {
+  width: 100%;
+  margin-top: 1.4rem;
+}
+
+/* Controls without labels are vertically offset */
+[class*='col-'] label + input:not([type='checkbox']):not([type='radio']),
+[class*='col-'] label + button:not(.he-checkbox):not(.he-radio),
+[class*='col-'] label + select, [class*='col-'] label + textarea,
+[class*='col-'] label + .he-scroll-list,
+[class*='col-'] label + .he-grid { 
+  margin-top: 0.3rem;
+}
+
+/* Columns with .dummylabel have top padding */
+[class*='col-'].dummylabel {
+  padding-top: 1.7rem;
+}
+
+[class*='col-'] button.he-checkbox, [class*='col-'] button.he-radio {
+  margin-top: 1.2rem;
+}
+[class*='col-'] label ~ button.he-checkbox, [class*='col-'] label ~ button.he-radio,
+/* These selectors are added because of button-lists which wrap the buttons in divs */
+[class*='col-'] label ~ div > button.he-checkbox, [class*='col-'] label ~ div > button.he-radio {
+  margin-top: 0.1rem;
+}
+
+/* Labels always come above inputs */
+[class*='col-'] label {
+  display: block;
+  width: 100%;
+  height: 1.1rem;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.col-1 { width: calc((100% - 165px) / 12); }
+.col-2 { width: calc((100% - 165px) / 12 * 2 + 15px); }
+.col-3 { width: calc((100% - 165px) / 12 * 3 + 30px); }
+.col-4 { width: calc((100% - 165px) / 12 * 4 + 45px); }
+.col-5 { width: calc((100% - 165px) / 12 * 5 + 60px); }
+.col-6 { width: calc((100% - 165px) / 12 * 6 + 75px); }
+.col-7 { width: calc((100% - 165px) / 12 * 7 + 90px); }
+.col-8 { width: calc((100% - 165px) / 12 * 8 + 105px); }
+.col-9 { width: calc((100% - 165px) / 12 * 9 + 120px); }
+.col-10 { width: calc((100% - 165px) / 12 * 10 + 135px); }
+.col-11 { width: calc((100% - 165px) / 12 * 11 + 150px); }
+.col-12 { width: 100%; }
+
+.off-1 { margin-left: calc((100% - 165px) / 12 + 30px); }
+.off-2 { margin-left: calc((100% - 165px) / 12 * 2 + 45px); }
+.off-3 { margin-left: calc((100% - 165px) / 12 * 3 + 60px); }
+.off-4 { margin-left: calc((100% - 165px) / 12 * 4 + 75px); }
+.off-5 { margin-left: calc((100% - 165px) / 12 * 5 + 90px); }
+.off-6 { margin-left: calc((100% - 165px) / 12 * 6 + 105px); }
+.off-7 { margin-left: calc((100% - 165px) / 12 * 7 + 120px); }
+.off-8 { margin-left: calc((100% - 165px) / 12 * 8 + 135px); }
+.off-9 { margin-left: calc((100% - 165px) / 12 * 9 + 150px); }
+.off-10 { margin-left: calc((100% - 165px) / 12 * 10 + 165px); }
+
+.off-1:first-child { margin-left: calc((100% - 165px) / 12 + 15px); }
+.off-2:first-child { margin-left: calc((100% - 165px) / 12 * 2 + 30px); }
+.off-3:first-child { margin-left: calc((100% - 165px) / 12 * 3 + 45px); }
+.off-4:first-child { margin-left: calc((100% - 165px) / 12 * 4 + 60px); }
+.off-5:first-child { margin-left: calc((100% - 165px) / 12 * 5 + 75px); }
+.off-6:first-child { margin-left: calc((100% - 165px) / 12 * 6 + 90px); }
+.off-7:first-child { margin-left: calc((100% - 165px) / 12 * 7 + 105px); }
+.off-8:first-child { margin-left: calc((100% - 165px) / 12 * 8 + 120px); }
+.off-9:first-child { margin-left: calc((100% - 165px) / 12 * 9 + 135px); }
+.off-10:first-child { margin-left: calc((100% - 165px) / 12 * 10 + 150px); }
+.off-11:first-child { margin-left: calc((100% - 165px) / 12 * 11 + 165px); }

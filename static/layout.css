@@ -35,7 +35,7 @@ img {
 }
 
 /** Layout styles **/
-body {
+#container {
   width: 1200px;
   margin: auto;
 }
@@ -46,7 +46,6 @@ header {
 main {
   margin: 20px 0;
 }
-
 section {
   margin-top: 30px;
 }
@@ -56,4 +55,7 @@ div.title {
 }
 li {
   margin: 5px 0;
+}
+label {
+  display: block;
 }

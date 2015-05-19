@@ -3,11 +3,382 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Query Builder</title>
-  <link rel="stylesheet" type="text/css" href="helium/css/helium-0.1.0.min.css">
-  <script src="lib/lodash-3.6.0.js"></script>
-  <script src="helium/js/helium-0.1.0.min.js"></script>
+  <title>Helium Kitchen Sink</title>
+  <link rel="stylesheet" type="text/css" href="static/layout.css">
+  <link rel="stylesheet" type="text/css" href="static/theme.css">
+  <link rel="stylesheet" type="text/css" href="static/grid.css">
+  <link rel="stylesheet" type="text/css" href="static/helium/css/helium-0.1.0.min.css">
+  
+  <script src="static/lib/lodash-3.8.0.js"></script>
+  <script src="static/helium/js/helium-0.1.0.min.js"></script>
+  
+  <link rel="stylesheet" href="static/highlight/github.css">
+  <script src="static/highlight/highlight.pack.js"></script>
+  <script src="static/sample-data/colors.js"></script>
+  <style>
+    code.javascript{ opacity: 0.3; }
+    code.javascript:hover{ opacity: 1; }
+    .color-square {
+      width: 1em;
+      height: 1em;
+      display: inline-block;
+      margin-right: 4px;
+      vertical-align: baseline;
+      position: relative;
+      top: 1px;
+    }
+  </style>
 </head>
 <body>
+  <div id="container">
+    <header>
+      <h1>Helium Kitchen Sink Demo</h1>
+    </header>
+    <main>
+      <section>
+        <p>
+          All the controls of Helium at one place for your tinkering pleasure.
+          The javascript code for each example is displayed immediately after it.
+          Controls defined on this page are available in the "window" namespace. Check the code samples and 
+          then fire up the console to play around with the API of each control.
+        </p>
+        <p>
+          Helium is mostly useful because of its API. The controls themselves are nothing new or revolutionary
+          but they are much simpler and more intuitive to use than what you get from the native HTML controls.
+          If you ended up here from another place than the <a href="https://github.com/skid/helium">Helium Github Project</a>,
+          I suggest you go back and check out the documentation and tutorials.
+        </p>
+      </section>
+
+      <section>
+        <div class="title"><h2>Buttons</h2></div>
+        <p>Helium buttons support a little bit more interactivity and porgrammability than standard HMTL buttons.</p>
+        <div class="row">
+          <div class="col-2">
+            <label>Simple label for the button</label>
+            <button id="button1">Simple Button</button>
+          </div>
+          <div class="col-2">
+            <button id="button2">Button with no label</button>
+          </div>
+          <div class="col-2">
+            <label id="button3-label">This button will be disabled</label>
+            <button id="button3">Click the other one</button>
+          </div>
+          <div class="col-2">
+            <label>Hey look, this one has an icon!</label>
+            <button id="button4">Disable that one</button>
+          </div>
+          <div class="col-2">
+            <label>Icons can be after the text, too!</label>
+            <button id="button5">Excellent!</button>
+          </div>
+        </div>
+        <pre><code class="javascript"></code></pre>
+        <script type="text/javascript">
+          // You can init a control by passing a HTML Element
+          var button1 = he('button', document.getElementById('button1')).on('click', function(){
+            alert("Button1 clicked!");
+          });
+          // Or by passing a valid HTML Element ID
+          var button2 = he('button', 'button2');
+        
+          // The he() function returns a reference to the control
+          var button3 = he('button', 'button3', { label: document.getElementById('button3-label') });
+          var button4 = he('button', 'button4', { icon: "chevron-left" }).on('click', function(){
+            if(button3.option('disabled')) {
+              // "this" inside event handlers refers to the control
+              this.option('text', 'Disable that one');
+              button3.enable();
+            } else {
+              this.option('text', 'Enable that one');
+              button3.disable();
+            }
+          });
+          var button5 = he('button', 'button5', { icon: "check", iconpos: "after" });
+        </script>
+      
+        <div class="row">
+          <div class="col-4">
+            <label>It's silly, but checkboxes and radios can have labels too.</label>
+            <button id="checkbox1">I'm a checkbox button</button>
+          </div>
+          <div class="col-4">
+            <label>It just comes for free because they too are buttons.</label>
+            <button id="radio1">I'm a radio button</button>        
+          </div>
+          <div class="col-4">
+            <label>Custom icons</label>
+            <button id="checkbox2">I too am a checkbox</button>
+          </div>
+        </div>
+        <pre><code class="javascript"></code></pre>
+        <script type="text/javascript">
+          // On their own, checkboxes and radios are pretty useless.
+          // But wait till we put them in lists
+          var checkbox1 = he('checkbox', 'checkbox1');
+          var radio1 = he('radio', 'radio1');
+          var checkbox2 = he('checkbox', 'checkbox2', { onIcon: "check", offIcon: "check-circle-outline-blank" });
+        </script>
+      </section>
+        
+      <section>
+        <div class="title"><h2>Inputs</h2></div>
+        <p>Now, inputs in helium offer much more than plain old HTML inputs.</p>
+        <div class="row">
+          <div class="col-2">
+            <label>A simple text input.</label>
+            <input id="input1">
+          </div>
+          <div class="col-2">
+            <label id="input2-label">I can have an icon too!</label>
+            <input id="input2">
+          </div>
+          <div class="col-2">
+            <label>Clickable icons even!</label>
+            <input id="input3">
+          </div>
+          <div class="col-2">
+            <label>Easy tooltips on hover.</label>
+            <input id="input4">
+          </div>
+          <div class="col-2">
+            <label id="input5-label">And errors as well!</label>
+            <input id="input5">
+          </div>
+        </div>
+        <pre><code class="javascript"></code></pre>
+        <script type="text/javascript">
+          var tooltip = "<div style='text-align:center'><strong>HTML</strong> in tooltips?<br> Sure, why not.</div>";
+          var input1 = he('input', 'input1', {value: "Value set programatically"});
+          var input2 = he('input', 'input2', {icon: "cloud-download", label: document.getElementById('input2-label')});
+          var input3 = he('input', 'input3', {icon: "check", iconpos: "after", click: true, placeholder: "Type 'disable' and click"});
+          var input4 = he('input', 'input4', {tooltip: { content: tooltip, position: "below" }});
+          var input5 = he('input', 'input5', {label: document.getElementById('input5-label')});
+        
+          // Supports a 'click' event if it has an icon and click:true options
+          input3.on('click', function(){
+            if(this.val() === "disable"){
+              input1.disable();
+              input2.disable();
+              this.option('placeholder', "Type 'enable' and click");
+            }
+            else if(this.val() === "enable"){
+              input1.enable();
+              input2.enable();
+              this.option('placeholder', "Type 'disable' and click");
+            }
+          });
+        
+          // This will show an error icon on the label, apply a class and add a tooltip
+          input5.option('error', "Hey! Don't do that!");
+        </script>
+
+        <div class="row">
+          <div class="col-2">
+            <label>Inputs can do numbers too</label>
+            <input id="input6">
+          </div>
+          <div class="col-2">
+            <label>And you get a number value (click)</label>
+            <input id="input7">
+          </div>
+          <div class="col-2">
+            <label>Why not dates?</label>
+            <input id="input8">
+          </div>
+          <div class="col-2">
+            <label>And a datepicker</label>
+            <input id="input9">
+          </div>
+          <div class="col-2">
+            <label>I almost forgot!</label>
+            <input id="input10">
+          </div>
+          <div class="col-2 dummylabel" id="input-10-text" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap"></div>
+        </div>
+        <pre><code class="javascript"></code></pre>
+        <script type="text/javascript">
+          // Number inputs return Number values. Values are automatically rounded to the specified format.
+          var input6 = he('number', 'input6', { value: 3, placeholder: "Try a negative number" });
+          var input7 = he('number', 'input7', { value: -3.44, negative: true,  format: 5, icon: "check", click: true, iconpos: "after" });
+        
+          // Change events are triggered when the input is blurred and the value is different from when it gained focus the last time.
+          input7.on('change', function(){
+            input6.val(this.val());
+          });
+        
+          // Date inputs return Date objects
+          var input8 = he('date', 'input8', { format: "US", value: new Date });
+          var input9 = he('date', 'input9', { format: "ISO", value: new Date, datepicker: { position: "below" } });
+        
+          // The "type" event is triggered only if the input's text content changed after a keypress
+          var input10 = he('input', 'input10', { placeholder: "Inputs handle 'typing'" });
+          input10.on('type', function(){
+            document.getElementById('input-10-text').innerHTML = this.val();
+          });
+        </script>
+      </section>
+      <section>
+        <div class="title"><h2>Lists</h2></div>
+        <p>
+          To be honest, the standard HTML &lt;select&gt; is pretty primitive.
+          The Helium lists offer an advanced API and a variety of implementations, fully navigable with a keyboard.
+        </p>
+        <div class="row">
+          <div class="col-2">
+            <label>Customizable scroll lists</label>
+            <div id="list1" style="height:93px; width: 180px"></div>
+          </div>
+          <div class="col-2">
+            <label>Customizable dropdowns too!</label>
+            <button id="list2"></button>
+          </div>
+          <div class="col-2">
+            <label>And with groups as well</label>
+            <button id="list3"></button>
+          </div>
+          <div class="col-2">
+            <label id="list4-label">Can be marked wrong</label>
+            <button id="list4"></button>
+          </div>
+          <div class="col-2">
+            <label id="list5-label">Or disabled</label>
+            <button id="list5"></button>
+          </div>
+        </div>
+        <pre><code class="javascript"></code></pre>
+        <script type="text/javascript">
+          // So, we already have a COLORS item set preloaded.
+          // It's an array that contains items like this `{ v: "#ff0000", t: "Red" }`
+        
+          // This is a small item set with optgroup headers.
+          // Any item that has no value key ("v"), but only a text key ("t") is treated as an optgroup header.
+          var SIMPLE = [
+            { t: "Integers" }, 
+            { v:0, t:"Zero" }, 
+            { v:1, t:"One" }, 
+            { t:"Real Numbers" }, 
+            { v: 1.111, t: "One point one, one, one" }
+          ];
+        
+          // A custom template function for rendering each item
+          var colorTemplate = function(item){
+            return "<div class='color-square' style='background-color:" + item.v +";'></div>" + item.t;
+          }
+        
+          var list1 = he('scrollList', 'list1', { 
+            items: COLORS, 
+            multiple: true,
+            nullable: true,
+            template: colorTemplate
+          });
+          var list2 = he('dropdownList', 'list2', {
+            items: COLORS,
+            nullable: false,
+            placeholder: "Pick a color",
+            template: colorTemplate
+          });
+          var list3 = he('dropdownList', 'list3', { items: SIMPLE });
+          var list4 = he('dropdownList', 'list4', { 
+            items: SIMPLE, 
+            placeholder: "Pick a real", 
+            label: document.getElementById('list4-label') }).on('change', function(){
+            this.option('error', (this.val() != null && this.val() % 1 === 0) ? 'Pick a REAL number!!!' : null);
+          });
+          var list5 = he('dropdownList', 'list5', { items: [], label: document.getElementById('list5-label'), disabled: true });
+        </script>
+        
+        <div class="row">
+          <div class="col-3">
+            <label>Autocomplete list</label>
+            <input id="list6">
+          </div>
+          <div class="col-4">
+            <label>Checkbox list</label>
+            <div id="list7"></div>
+          </div>
+          <div class="col-4">
+            <label>Radio List</label>
+            <div id="list8"></div>
+          </div>
+        </div>
+        <pre><code class="javascript"></code></pre>
+        <script type="text/javascript">
+          var list6 = he('autocompleteList', 'list6', { items: COLORS, template: colorTemplate, placeholder: "Start Typing..." });
+          var list7 = he('buttonList', 'list7', { items: SIMPLE, type: "checkbox" });
+          var list8 = he('buttonList', 'list8', { items: SIMPLE, type: "radio", value: 0 });
+        </script>
+      </section>
+      <section>
+        <div class="title"><h2>Modal</h2></div>
+        <p>
+          A modal window API is also covered by Helium.
+          A neat feature is that it captures the tab-order of the helium controls while it's open
+          and it doesn't allow you to tab-focus into a control not in the modal.
+        </p>
+        <div class="row">
+          <div class="col-2 off-5">
+            <button id="button-modal-open">Open the modal</button>
+          </div>
+        </div>
+      
+        <div id="modal" class="he-modal" style="width: 400px">
+          <div class="title"><h2>Hello!</h2></div>
+          <div class="row">
+            <div class="col-6">
+              <label>First Name</label>
+              <input id="modal-input1">
+            </div>
+            <div class="col-6">
+              <label>Last Name</label>
+              <input id="modal-input2">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4 off-8">
+              <button id="button-modal-ok">OK</button>
+            </div>
+          </div>
+        </div>
+
+        <pre><code class="javascript"></code></pre>
+        <script type="text/javascript">
+          var buttonModalOpen = he('button', 'button-modal-open');
+          var buttonModalOk = he('button', 'button-modal-ok');
+          var modalInput1 = he('input', 'modal-input1');
+          var modalInput2 = he('input', 'modal-input2');
+          var modal = he('modal', 'modal', { closeAnywhere: false, closeIcon: true });
+          buttonModalOpen.on('click', function(){
+            modal.open();
+          });
+          buttonModalOk.on('click', function(){
+            modal.close();
+          });
+        </script>
+      </section>
+
+      <section>
+        <div class="title"><h2>Grid</h2></div>
+        <p>The grid control is quite big and has a lot of features. We dedicated an entire demo page to it.</p>
+        <p><a href="helium-grid.html">Check it out here</a>.</p>
+      </section>
+    </main>
+    <footer style="height:200px"></footer>
+    <script>
+    var blocks = document.querySelectorAll('.javascript');
+    for(var i=0; i<blocks.length; i++){
+      var script = blocks[i].parentNode.nextElementSibling;
+      if(script.tagName === "SCRIPT"){
+        var html = blocks[i].parentNode.nextElementSibling.innerHTML;
+        var indent = html.match(/\n(\s*)/m)[1].length;
+        blocks[i].innerHTML = html.replace(new RegExp("^\\s{" + indent + "}", "gm"), "").replace(/^(\s+)|(\s+)$/g, "").replace(/[\u00A0-\u9999\<\>\&]/gim, function(i) {
+          return '&#'+i.charCodeAt(0)+';';
+        });
+        hljs.highlightBlock(blocks[i]);
+      }
+    }
+    </script>
+  </div>
 </body>
 </html>
