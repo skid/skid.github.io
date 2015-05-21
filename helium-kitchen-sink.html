@@ -348,7 +348,7 @@
           var buttonModalOk = he('button', 'button-modal-ok');
           var modalInput1 = he('input', 'modal-input1');
           var modalInput2 = he('input', 'modal-input2');
-          var modal = he('modal', 'modal', { closeAnywhere: false, closeIcon: true });
+          var modal = he('modal', 'modal', { closeAnywhere: false, closeIcon: true, focusOnFirst: true });
           buttonModalOpen.on('click', function(){
             modal.open();
           });
